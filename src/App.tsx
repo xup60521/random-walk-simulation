@@ -10,39 +10,65 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
+import { Input } from "./components/ui/input";
 
 export default function App() {
-    const [numberOfParticles, setNumberOfParticles] = useState(10);
+    const [numberOfParticles, setNumberOfParticles] = useState(100);
     const [speed, setSpeed] = useState(0.02);
+    const [open, setOpen] = useState(false);
     return (
         <main className="w-full min-h-screen">
-            <Dialog>
-                <DialogTrigger asChild>
-                    <Button className="absolute left-[50%] -translate-x-[50%] bottom-4 z-10">
-                        Setting
-                    </Button>
-                </DialogTrigger>
+            <div className="absolute left-[50%] -translate-x-[50%] bottom-4 z-10 flex gap-2">
+                <Button onClick={() => setOpen(true)}>Setting</Button>
+                <Button variant="outline" onClick={async () => {
+                    const thisNumber = numberOfParticles
+                    setNumberOfParticles(0)
+                    setTimeout(() => {
+                        setNumberOfParticles(thisNumber)
+                    }, 0)
+                }}>Reset Position</Button>
+            </div>
+            <Dialog onOpenChange={setOpen} open={open}>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                         <DialogTitle>Setting</DialogTitle>
                     </DialogHeader>
-                    <span>Number of particles ({numberOfParticles})</span>
-                    <Slider
-                        max={100}
-                        step={1}
-                        value={[numberOfParticles]}
-                        onValueChange={([e]) => setNumberOfParticles(e)}
-                    />
-                    <span>Speed ({speed})</span>
-                    <Slider
-                        max={0.5}
-                        step={0.01}
-                        value={[speed]}
-                        onValueChange={([e]) => setSpeed(e)}
-                    />
+                    <span>Number of particles</span>
+                    <div className="flex gap-2">
+                        <Slider
+                            max={1000}
+                            step={1}
+                            value={[numberOfParticles]}
+                            onValueChange={([e]) => setNumberOfParticles(e)}
+                        />
+                        <Input
+                            type="number"
+                            className="w-20"
+                            value={numberOfParticles}
+                            onChange={(e) =>
+                                setNumberOfParticles(Number(e.target.value))
+                            }
+                        />
+                    </div>
+                    <span>Speed</span>
+                    <div className="flex gap-2">
+                        <Slider
+                            max={0.5}
+                            step={0.01}
+                            value={[speed]}
+                            onValueChange={([e]) => setSpeed(e)}
+                        />
+                        <Input
+                            type="number"
+                            className="w-20"
+                            value={speed}
+                            onChange={(e) =>
+                                setSpeed(Number(e.target.value))
+                            }
+                        />
+                    </div>
                     <DialogFooter>
                         <DialogClose>
                             <Button>Save changes</Button>
